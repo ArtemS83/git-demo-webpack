@@ -1,5 +1,5 @@
 import articleaTemplate from '../templates/articles.hbs';
-console.log('Hello fetch');
+// console.log('Hello fetch');
 
 const fetchDivRef = document.querySelector('.js-fetch');
 const btnRef = document.querySelector('.hidden');
