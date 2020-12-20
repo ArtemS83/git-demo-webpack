@@ -1,0 +1,17 @@
+{{#each this}}
+<li class="menu__item">
+    <article class="card">
+        <img src="{{urlToImage}}" alt="{{title}}" class="card__image" />
+        <div class="card__content">
+
+            <a href="{{url}}" class="card__name">
+                <h2 class="card__name">{{title}}</h2>
+            </a>
+            <p class="card__descr">
+                {{description}}
+            </p>
+        </div>
+        <span>{{publishedAt}}</span>
+    </article>
+</li>
+{{/each}}
