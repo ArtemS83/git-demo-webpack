@@ -1,0 +1,48 @@
+//============login===========//
+ Создать нового пользователя
+POST
+//https://goit-phonebook-api.herokuapp.com/users/signup
+{
+  "name": "Artem Sergieiev",
+  "email": "a_serg83@ukr.net",
+  "password": "qweqwe123"
+}
+
+ответ
+{
+    "user": {
+        "name": "Artem Sergieiev",
+        "email": "a_serg83@ukr.net"
+    },
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZmZjMjJmODhkNjk1NzAwMTdiYWViNjAiLCJpYXQiOjE2MTAzNjA2MDF9.S2MchL3HLkdZb6d3fUt1q9OAu0EL-5RfMgyKCWGZa6s"
+}
+{
+  "name": "Artem Sergieiev",
+  "email": "qwe@ukr.net",
+  "password": "qweqwe123"
+}
+ответ
+
+    "user": {
+        "name": "Artem Sergieiev",
+        "email": "qwe@ukr.net"
+    },
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZmZjYmRiYzgyMDQxZjAwMTcxMzJhYTciLCJpYXQiOjE2MTAzOTkxNjR9.Rwd8W_lIpMIXb7Wh_SQ2RV7xSsio2_E26Yv7hq9g6Qw"
+{"user":{"name":"Alex","email":"alex@mail.net"},"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZmZkYmE0NmRkMWQwMjAwMTc1Y2QxZTUiLCJpYXQiOjE2MTA0NjM4MTR9.p5oFGSzSTIwEAWBy-XY4EMMjOD2hFAOJuT0bTb03XNA"}
+//Залогинить пользователя
+POST
+//https://goit-phonebook-api.herokuapp.com/users/login
+
+{
+  "email": "a_serg83@ukr.net",
+  "password": "qweqwe123"
+}
+ответ
+{
+    "user": {
+        "name": "Artem Sergieiev",
+        "email": "a_serg83@ukr.net"
+    },
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZmZjMjJmODhkNjk1NzAwMTdiYWViNjAiLCJpYXQiOjE2MTAzNjA2MDF9.S2MchL3HLkdZb6d3fUt1q9OAu0EL-5RfMgyKCWGZa6s"
+}
+//We cannot find an account with that email address

@@ -20,14 +20,81 @@
     </style>
   </head>
   <body>
-    <a href="" class="as"></a>
+    <h1>Phonebook</h1>
+
+    <nav>
+      <div class="user-info">
+        <p class="name"></p>
+        <p class="email"></p>
+      </div>
+      <button class="signup">Sign up</button>
+      <button class="login">Login</button>
+      <button class="logout is-hidden">Logout</button>
+    </nav>
+    <span class="span-error is-hidden">Please check the entered data!</span>
+    <pre></pre>
+    <form class="form-signup is-hidden">
+      <p>Registration</p>
+      <label>
+        <span>User name</span>
+        <input type="text" name="userName" />
+      </label>
+      <label>
+        <span>email</span>
+        <input type="email" name="email" />
+      </label>
+      <label>
+        <span>password</span>
+        <input
+          type="text"
+          name="password"
+          placeholder="minimum allowed length 7"
+        />
+      </label>
+      <button type="submit">Registration</button>
+    </form>
+    <form class="form-login is-hidden">
+      <p>Logging</p>
+        <span>email</span>
+        <input type="email" name="email" />
+      </label>
+      <label>
+        <span>password</span>
+        <input
+          type="text"
+          name="password"
+          placeholder="minimum allowed length 7"
+        />
+      </label>
+      <button type="submit">Login</button>
+    </form>
+    <content class="content is-hidden">
+      <form class="form">
+        <label>
+          <span>name</span>
+          <input type="text" name="name" />
+        </label>
+        <label>
+          <span>number</span>
+          <input type="tel" name="number" />
+        </label>
+        <button type="submit">Add</button>
+      </form>
+
+      <ul class="list js-list"></ul>
+    </content>
+
+    <!-- <div class="loader">
+      <p>Loading...</p>
+    </div> -->
+    <!-- <a href="" class="as"></a>
     <input class="input-crud" type="text" />
     <button id="js-btn1" type="button" class="hidden">CLICK ME(dodaj)</button>
-    <ul id="todos-list"></ul>
+    <ul id="todos-list"></ul> -->
     <!-- <button id="js-btn" class="btn">CLICK ME!</button>
     <p id="js-output">async data will be shown here</p> -->
-    <ul class="menu js-fetch"></ul>
-    <button id="js-btn" class="btn nohidden">Dodaj!</button>
+    <!-- <ul class="menu js-fetch"></ul>
+    <button id="js-btn" class="btn nohidden">Dodaj!</button> -->
     <!-- <script src="./main.js" type="module"></script> -->
     <!-- <script src="./date.js" type="module"></script> -->
     <!-- <script src="./timeout.js" type="module"></script> -->
