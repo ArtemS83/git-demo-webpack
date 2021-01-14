@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 const refs = {
   signupBtn: document.querySelector('.signup'),
   loginBtn: document.querySelector('.login'),
@@ -14,18 +16,16 @@ const refs = {
   textNoContacts: document.querySelector('.span-no-contacts'),
   formUpdate: document.querySelector('.form-update'),
 };
-//
-//
-//
-//
 
 //==========api.js=======//
 const BASE_URL = 'https://goit-phonebook-api.herokuapp.com';
 let Token = '';
 //
-//
-//
-
+////==========axois consts=======//
+axios.defaults.baseURL = 'https://goit-phonebook-api.herokuapp.com';
+axios.defaults.headers.common['Authorization'] = `Bearer ${Token}`;
+//const setToken = token => {axios.defaults.headers.common['Authorization'] = token;};
+// fetch==>setToken(data.token);
 //==================sign up======================//
 
 refs.signupBtn.addEventListener('click', onSingUp);
@@ -91,19 +91,18 @@ function onLoginUser(e) {
 }
 
 function onLoginDataUser(dataValue) {
-  fetchLogin(dataValue)
-    .then(data => {
-      Token = data.token;
-      refs.userName.textContent = data.user.name;
-      refs.userEmail.textContent = data.user.email;
-      refs.loginForm.reset();
-      refs.textError.classList.add('is-hidden');
-      refs.loginForm.classList.add('is-hidden');
-      refs.contentForm.classList.remove('is-hidden');
-      refs.logoutBtn.classList.remove('is-hidden');
-      getContacts(Token);
-    })
-    .catch(error => console.log(error));
+  fetchLogin(dataValue).then(data => {
+    Token = data.token;
+    refs.userName.textContent = data.user.name;
+    refs.userEmail.textContent = data.user.email;
+    refs.loginForm.reset();
+    refs.textError.classList.add('is-hidden');
+    refs.loginForm.classList.add('is-hidden');
+    refs.contentForm.classList.remove('is-hidden');
+    refs.logoutBtn.classList.remove('is-hidden');
+    getContacts(Token);
+  });
+  // .catch(error => console.log(error));
 }
 
 //=================LOGOUT===============//
@@ -257,6 +256,135 @@ function handleContactClick(e) {
 //
 //====================api.js=============//
 
+// function fetchSignup(data) {
+//   const options = {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify(data),
+//   };
+
+//   return fetch(`${BASE_URL}/users/signup`, options).then(res => {
+//     if (res.status === 400) {
+//       refs.textError.classList.remove('is-hidden');
+
+//       return;
+//     } else {
+//       return res.json();
+//     }
+//   });
+// }
+
+// function fetchLogin(data) {
+//   const options = {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify(data),
+//   };
+
+//   return fetch(`${BASE_URL}/users/login`, options).then(res => {
+//     if (res.status === 400) {
+//       refs.textError.classList.remove('is-hidden');
+//       return;
+//     } else {
+//       return res.json();
+//     }
+//   });
+// }
+
+// function fetchLogout(tokenValue) {
+//   const options = {
+//     method: 'POST',
+//     headers: {
+//       Authorization: `Bearer ${tokenValue}`,
+//     },
+//   };
+
+//   return fetch(`${BASE_URL}/users/logout`, options).then(res => {
+//     if (res.status === 401) {
+//       refs.textError.classList.remove('is-hidden');
+//       return;
+//     } else {
+//       return res.json();
+//     }
+//   });
+// }
+
+// function fetchСontacts(tokenValue) {
+//   const headers = {
+//     Authorization: `Bearer ${tokenValue}`,
+//   };
+
+//   return fetch(`${BASE_URL}/contacts`, {
+//     headers,
+//   }).then(res => res.json());
+// }
+
+// function addNewContact(data) {
+//   const options = {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//       Authorization: `Bearer ${Token}`,
+//     },
+//     body: JSON.stringify(data),
+//   };
+
+//   return fetch(`${BASE_URL}/contacts`, options).then(res => {
+//     if (res.status === 400) {
+//       refs.textError.classList.remove('is-hidden');
+//       return;
+//     } else {
+//       return res.json();
+//     }
+//   });
+// }
+
+// function updateContactFn(data, tokenValue, idValue) {
+//   const options = {
+//     method: 'PATCH',
+//     headers: {
+//       'Content-Type': 'application/json',
+//       Authorization: `Bearer ${tokenValue}`,
+//     },
+//     body: JSON.stringify(data),
+//   };
+
+//   return fetch(`${BASE_URL}/contacts/${idValue}`, options).then(res => {
+//     if (res.status === 401 || res.status === 400) {
+//       refs.textError.classList.remove('is-hidden');
+//       return;
+//     } else {
+//       return res.json();
+//     }
+//   });
+// }
+
+// function deleteContact(tokenValue, idValue) {
+//   const options = {
+//     method: 'DELETE',
+//     headers: {
+//       'Content-Type': 'application/json',
+//       Authorization: `Bearer ${tokenValue}`,
+//     },
+//   };
+
+//   return fetch(`${BASE_URL}/contacts/${idValue}`, options).then(res => {
+//     if (res.status === 401 || res.status === 404) {
+//       refs.textError.classList.remove('is-hidden');
+//       return;
+//     } else {
+//       return res.json();
+//     }
+//   });
+// }
+//
+//
+//===========================AXIOS===================//
+
 function fetchSignup(data) {
   const options = {
     method: 'POST',
@@ -277,24 +405,28 @@ function fetchSignup(data) {
   });
 }
 
-function fetchLogin(data) {
-  const options = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  };
+// function fetchLogin(dataUser) {
+//   return axios
+//     .post('/users/login', dataUser)
+//     .then(({ data }) => {
+//       return data;
+//     })
+//     .catch(error => {
+//       refs.textError.classList.remove('is-hidden');
+//       console.log(error);
+//     });
+// }
 
-  return fetch(`${BASE_URL}/users/login`, options).then(res => {
-    if (res.status === 400) {
+const fetchLogin = dataUser =>
+  axios
+    .post('/users/login', dataUser)
+    .then(({ data }) => {
+      return data;
+    })
+    .catch(error => {
       refs.textError.classList.remove('is-hidden');
-      return;
-    } else {
-      return res.json();
-    }
-  });
-}
+      console.log(error);
+    });
 
 function fetchLogout(tokenValue) {
   const options = {
