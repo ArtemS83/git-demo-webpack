@@ -17,15 +17,17 @@ const refs = {
   formUpdate: document.querySelector('.form-update'),
 };
 
-//==========api.js=======//
-const BASE_URL = 'https://goit-phonebook-api.herokuapp.com';
-let Token = '';
-//
-////==========axois consts=======//
+////==========api.js axois =======//
 axios.defaults.baseURL = 'https://goit-phonebook-api.herokuapp.com';
-axios.defaults.headers.common['Authorization'] = `Bearer ${Token}`;
-//const setToken = token => {axios.defaults.headers.common['Authorization'] = token;};
-// fetch==>setToken(data.token);
+const setToken = token => {
+  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+};
+
+//==========api.js fetch=======//
+// const BASE_URL = 'https://goit-phonebook-api.herokuapp.com';
+// let Token = '';
+//
+
 //==================sign up======================//
 
 refs.signupBtn.addEventListener('click', onSingUp);
@@ -54,7 +56,7 @@ function onRegistrationUser(e) {
 function onGetDataUser(dataValue) {
   fetchSignup(dataValue)
     .then(data => {
-      Token = data.token;
+      // Token = data.token;
       refs.userName.textContent = data.user.name;
       refs.userEmail.textContent = data.user.email;
       refs.signupForm.reset();
@@ -64,7 +66,10 @@ function onGetDataUser(dataValue) {
       refs.logoutBtn.classList.remove('is-hidden');
       refs.textNoContacts.classList.remove('is-hidden');
     })
-    .catch(error => console.log(error));
+    .catch(error => {
+      refs.textError.classList.remove('is-hidden');
+      console.log(error);
+    });
 }
 
 //=================LOGIN===============//
@@ -91,18 +96,23 @@ function onLoginUser(e) {
 }
 
 function onLoginDataUser(dataValue) {
-  fetchLogin(dataValue).then(data => {
-    Token = data.token;
-    refs.userName.textContent = data.user.name;
-    refs.userEmail.textContent = data.user.email;
-    refs.loginForm.reset();
-    refs.textError.classList.add('is-hidden');
-    refs.loginForm.classList.add('is-hidden');
-    refs.contentForm.classList.remove('is-hidden');
-    refs.logoutBtn.classList.remove('is-hidden');
-    getContacts(Token);
-  });
-  // .catch(error => console.log(error));
+  fetchLogin(dataValue)
+    .then(data => {
+      // Token = data.token;
+      refs.userName.textContent = data.user.name;
+      refs.userEmail.textContent = data.user.email;
+      refs.loginForm.reset();
+      refs.textError.classList.add('is-hidden');
+      refs.loginForm.classList.add('is-hidden');
+      refs.contentForm.classList.remove('is-hidden');
+      refs.logoutBtn.classList.remove('is-hidden');
+      // getContacts(Token);
+      getContacts();
+    })
+    .catch(error => {
+      refs.textError.classList.remove('is-hidden');
+      console.log(error);
+    });
 }
 
 //=================LOGOUT===============//
@@ -110,9 +120,9 @@ function onLoginDataUser(dataValue) {
 refs.logoutBtn.addEventListener('click', onLogout);
 
 function onLogout() {
-  fetchLogout(Token)
+  fetchLogout() //приобычном fetch было fetchLogout(Token)
     .then(() => {
-      Token = '';
+      // Token = '';
       refs.userName.textContent = '';
       refs.userEmail.textContent = '';
       refs.logoutBtn.classList.add('is-hidden');
@@ -124,13 +134,16 @@ function onLogout() {
       refs.listContacs.innerHTML = '';
       refs.textNoContacts.classList.add('is-hidden');
     })
-    .catch(error => console.log(error));
+    .catch(error => {
+      refs.textError.classList.remove('is-hidden');
+      console.log(error);
+    });
 }
 
 //=================getContacs===============//
 
-function getContacts(tokenValue) {
-  fetchСontacts(tokenValue)
+function getContacts() {
+  fetchСontacts()
     .then(data => {
       renderContacts(data);
     })
@@ -177,7 +190,7 @@ function onAddContact(e) {
     name,
     number,
   };
-  addNewContact(newContact)
+  fetchAddNewContact(newContact)
     .then(data => {
       const item = [];
       item.push(data);
@@ -190,7 +203,10 @@ function onAddContact(e) {
       refs.formADD.reset();
       refs.textNoContacts.classList.add('is-hidden');
     })
-    .catch(error => console.log(error));
+    .catch(error => {
+      refs.textError.classList.remove('is-hidden');
+      console.log(error);
+    });
 }
 
 //=============Delete and update contact=======//
@@ -203,17 +219,19 @@ function handleContactClick(e) {
   if (e.target.nodeName !== 'BUTTON') {
     return;
   }
-  ///////=============Deletecontact=======//
+
   if (id && type === 'delete') {
-    deleteContact(Token, id)
+    fetchdeleteContact(id)
       .then(() => {
         refs.textError.classList.add('is-hidden');
-        getContacts(Token);
+        // getContacts(Token);//fetch method
+        getContacts();
       })
-      .catch(error => console.log(error));
+      .catch(error => {
+        refs.textError.classList.remove('is-hidden');
+        console.log(error);
+      });
   }
-
-  ///// //===========UPdate contact=======//
 
   if (id && type === 'update') {
     const nameContactRef = document.querySelector(`.js-name-${id}`);
@@ -237,24 +255,69 @@ function handleContactClick(e) {
         name,
         number,
       };
-      updateContactFn(updateData, Token, id)
+      fetchupdateContactFn(updateData, id)
         .then(() => {
           refs.textError.classList.add('is-hidden');
           refs.formUpdate.classList.add('is-hidden');
           refs.formUpdate.reset();
           refs.contentForm.classList.remove('is-hidden');
-          getContacts(Token);
+          // getContacts(Token);//fetch method
+          getContacts();
         })
-        .catch(error => console.log(error));
+        .catch(error => {
+          refs.textError.classList.remove('is-hidden');
+          console.log(error);
+        });
     }
   }
 }
 //
 //
-//
-//
-//
-//====================api.js=============//
+
+//===========================api.js AXIOS===================//
+
+function fetchSignup(dataNewUser) {
+  return axios.post(`/users/signup`, dataNewUser).then(({ data }) => {
+    setToken(data.token);
+    return data;
+  });
+}
+
+function fetchLogin(dataUser) {
+  return axios.post('/users/login', dataUser).then(({ data }) => {
+    setToken(data.token);
+    return data;
+  });
+}
+
+// const fetchLogin = dataUser =>
+//   axios.post('/users/login', dataUser).then(({ data }) => {
+//     return data;
+//   });
+
+function fetchLogout() {
+  return axios.post(`/users/logout`);
+}
+
+function fetchСontacts() {
+  return axios.get(`/contacts`).then(({ data }) => data);
+}
+
+function fetchAddNewContact(dataNewContact) {
+  return axios.post(`/contacts`, dataNewContact).then(({ data }) => data);
+}
+
+function fetchupdateContactFn(dataUpdateContact, idValue) {
+  return axios
+    .patch(`/contacts/${idValue}`, dataUpdateContact)
+    .then(({ data }) => data);
+}
+
+function fetchdeleteContact(idValue) {
+  return axios.delete(`/contacts/${idValue}`).then(({ data }) => data);
+}
+
+//====================api.js (fetch)=============//
 
 // function fetchSignup(data) {
 //   const options = {
@@ -323,7 +386,7 @@ function handleContactClick(e) {
 //   }).then(res => res.json());
 // }
 
-// function addNewContact(data) {
+// function fetchAddNewContact(data) {
 //   const options = {
 //     method: 'POST',
 //     headers: {
@@ -343,7 +406,7 @@ function handleContactClick(e) {
 //   });
 // }
 
-// function updateContactFn(data, tokenValue, idValue) {
+// function fetchupdateContactFn(data, tokenValue, idValue) {
 //   const options = {
 //     method: 'PATCH',
 //     headers: {
@@ -363,7 +426,7 @@ function handleContactClick(e) {
 //   });
 // }
 
-// function deleteContact(tokenValue, idValue) {
+// function fetchdeleteContact(tokenValue, idValue) {
 //   const options = {
 //     method: 'DELETE',
 //     headers: {
@@ -383,134 +446,3 @@ function handleContactClick(e) {
 // }
 //
 //
-//===========================AXIOS===================//
-
-function fetchSignup(data) {
-  const options = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  };
-
-  return fetch(`${BASE_URL}/users/signup`, options).then(res => {
-    if (res.status === 400) {
-      refs.textError.classList.remove('is-hidden');
-
-      return;
-    } else {
-      return res.json();
-    }
-  });
-}
-
-// function fetchLogin(dataUser) {
-//   return axios
-//     .post('/users/login', dataUser)
-//     .then(({ data }) => {
-//       return data;
-//     })
-//     .catch(error => {
-//       refs.textError.classList.remove('is-hidden');
-//       console.log(error);
-//     });
-// }
-
-const fetchLogin = dataUser =>
-  axios
-    .post('/users/login', dataUser)
-    .then(({ data }) => {
-      return data;
-    })
-    .catch(error => {
-      refs.textError.classList.remove('is-hidden');
-      console.log(error);
-    });
-
-function fetchLogout(tokenValue) {
-  const options = {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${tokenValue}`,
-    },
-  };
-
-  return fetch(`${BASE_URL}/users/logout`, options).then(res => {
-    if (res.status === 401) {
-      refs.textError.classList.remove('is-hidden');
-      return;
-    } else {
-      return res.json();
-    }
-  });
-}
-
-function fetchСontacts(tokenValue) {
-  const headers = {
-    Authorization: `Bearer ${tokenValue}`,
-  };
-
-  return fetch(`${BASE_URL}/contacts`, {
-    headers,
-  }).then(res => res.json());
-}
-
-function addNewContact(data) {
-  const options = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${Token}`,
-    },
-    body: JSON.stringify(data),
-  };
-
-  return fetch(`${BASE_URL}/contacts`, options).then(res => {
-    if (res.status === 400) {
-      refs.textError.classList.remove('is-hidden');
-      return;
-    } else {
-      return res.json();
-    }
-  });
-}
-
-function updateContactFn(data, tokenValue, idValue) {
-  const options = {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${tokenValue}`,
-    },
-    body: JSON.stringify(data),
-  };
-
-  return fetch(`${BASE_URL}/contacts/${idValue}`, options).then(res => {
-    if (res.status === 401 || res.status === 400) {
-      refs.textError.classList.remove('is-hidden');
-      return;
-    } else {
-      return res.json();
-    }
-  });
-}
-
-function deleteContact(tokenValue, idValue) {
-  const options = {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${tokenValue}`,
-    },
-  };
-
-  return fetch(`${BASE_URL}/contacts/${idValue}`, options).then(res => {
-    if (res.status === 401 || res.status === 404) {
-      refs.textError.classList.remove('is-hidden');
-      return;
-    } else {
-      return res.json();
-    }
-  });
-}
