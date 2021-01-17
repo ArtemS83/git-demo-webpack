@@ -94,26 +94,43 @@ function onLoginUser(e) {
   };
   onLoginDataUser(loginData);
 }
+//===============saync/await  try/catch====//
 
-function onLoginDataUser(dataValue) {
-  fetchLogin(dataValue)
-    .then(data => {
-      // Token = data.token;
-      refs.userName.textContent = data.user.name;
-      refs.userEmail.textContent = data.user.email;
-      refs.loginForm.reset();
-      refs.textError.classList.add('is-hidden');
-      refs.loginForm.classList.add('is-hidden');
-      refs.contentForm.classList.remove('is-hidden');
-      refs.logoutBtn.classList.remove('is-hidden');
-      // getContacts(Token);
-      getContacts();
-    })
-    .catch(error => {
-      refs.textError.classList.remove('is-hidden');
-      console.log(error);
-    });
+async function onLoginDataUser(dataValue) {
+  try {
+    const { user } = await fetchLogin(dataValue);
+    refs.userName.textContent = user.name;
+    refs.userEmail.textContent = user.email;
+    refs.loginForm.reset();
+    refs.textError.classList.add('is-hidden');
+    refs.loginForm.classList.add('is-hidden');
+    refs.contentForm.classList.remove('is-hidden');
+    refs.logoutBtn.classList.remove('is-hidden');
+    getContacts();
+  } catch (error) {
+    refs.textError.classList.remove('is-hidden');
+    console.log(error);
+  }
 }
+// function onLoginDataUser(dataValue) {
+//   fetchLogin(dataValue)
+//     .then(data => {
+//       // Token = data.token;
+//       refs.userName.textContent = data.user.name;
+//       refs.userEmail.textContent = data.user.email;
+//       refs.loginForm.reset();
+//       refs.textError.classList.add('is-hidden');
+//       refs.loginForm.classList.add('is-hidden');
+//       refs.contentForm.classList.remove('is-hidden');
+//       refs.logoutBtn.classList.remove('is-hidden');
+//       // getContacts(Token);
+//       getContacts();
+//     })
+//     .catch(error => {
+//       refs.textError.classList.remove('is-hidden');
+//       console.log(error);
+//     });
+// }
 
 //=================LOGOUT===============//
 
@@ -133,6 +150,7 @@ function onLogout() {
       refs.loginBtn.classList.remove('is-hidden');
       refs.listContacs.innerHTML = '';
       refs.textNoContacts.classList.add('is-hidden');
+      refs.formUpdate.classList.add('is-hidden');
     })
     .catch(error => {
       refs.textError.classList.remove('is-hidden');
@@ -168,7 +186,7 @@ function render(params) {
     .map(
       ({ id, name, number }) =>
         `<li>
-        <span class="js-name-${id}">${name}: </span> <span class="js-number-${id}">${number}</span>
+        <span class="js-name-${id}">${name}</span>:  <span class="js-number-${id}">${number}</span>
         
           <button class="delete" data-id=${id} data-type="delete">delete</button>
           <button class="update" data-id=${id} data-type="update">update</button>
@@ -190,6 +208,7 @@ function onAddContact(e) {
     name,
     number,
   };
+
   fetchAddNewContact(newContact)
     .then(data => {
       const item = [];
@@ -268,6 +287,7 @@ function handleContactClick(e) {
           refs.textError.classList.remove('is-hidden');
           console.log(error);
         });
+      refs.formUpdate.removeEventListener('submit', onUpdateContact); //снимаем слушатель,чтобы не дублировать запросы
     }
   }
 }
@@ -292,6 +312,7 @@ function fetchLogin(dataUser) {
 
 // const fetchLogin = dataUser =>
 //   axios.post('/users/login', dataUser).then(({ data }) => {
+//     setToken(data.token);
 //     return data;
 //   });
 
@@ -316,6 +337,48 @@ function fetchupdateContactFn(dataUpdateContact, idValue) {
 function fetchdeleteContact(idValue) {
   return axios.delete(`/contacts/${idValue}`).then(({ data }) => data);
 }
+
+//====================api.js (axios async/await)=============//
+
+// async function fetchSignup(dataNewUser) {
+//   const newUser = await axios.post(`/users/signup`, dataNewUser);
+//   const { data } = newUser;
+//   setToken(data.token);
+//   return data;
+// }
+
+// const fetchLogin = async dataUser => {
+//   // const user = await axios.post('/users/login', dataUser);
+//   // const { data } = user;
+//   const { data } = await axios.post('/users/login', dataUser);
+//   setToken(data.token);
+//   return data;
+// };
+
+// async function fetchLogout() {
+//   await axios.post(`/users/logout`);
+// }
+
+// async function fetchСontacts() {
+//   const contacts = await axios.get(`/contacts`);
+//   const { data } = contacts;
+//   return data;
+// }
+
+// async function fetchAddNewContact(dataNewContact) {
+//   const { data } = await axios.post(`/contacts`, dataNewContact);
+//   return data;
+// }
+
+// async function fetchupdateContactFn(dataUpdateContact, idValue) {
+//   const { data } = await axios.patch(`/contacts/${idValue}`, dataUpdateContact);
+//   return data;
+// }
+
+// async function fetchdeleteContact(idValue) {
+//   const { data } = await axios.delete(`/contacts/${idValue}`);
+//   return data;
+// }
 
 //====================api.js (fetch)=============//
 
