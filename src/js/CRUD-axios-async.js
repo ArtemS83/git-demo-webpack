@@ -507,5 +507,3 @@ function fetchdeleteContact(idValue) {
 //     }
 //   });
 // }
-//
-//
